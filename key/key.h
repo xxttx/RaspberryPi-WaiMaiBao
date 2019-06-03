@@ -1,5 +1,5 @@
 #include <string>
-#include <record>
+#include "record"
 #include <vector>
 using namespace std;
 
@@ -11,11 +11,3 @@ public:
     bool GetKey();
 };
 
-class FindKey
-{
-public: 
-
-    int Find(string tar);
-
-    int BinaryFind(int l,int r,string tar);
-};

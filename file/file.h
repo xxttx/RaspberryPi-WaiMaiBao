@@ -1,17 +1,29 @@
-#include <string>
-#include <record>
+#include "string"
+#include "record.h"
+#include "vector"
 
 using namespace std;
 
 class File
 {
-public:
     string Path;
     int tot;
     vector<Record> rec;
 
-    void Init();
+    void Init(string path)
+    {
+        rec.clear();
+        Path = path;
+        tot = 0;
+    }
 
-    File(string path);
+    void Load(string path);
 
+    void WriteAll();
+
+    Record FileFind(string tarkey);
+
+    void FileInsert(Record tar);
+
+    void FileDelete(Record tar);
 }

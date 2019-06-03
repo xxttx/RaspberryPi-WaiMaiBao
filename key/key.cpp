@@ -7,7 +7,15 @@ using namespace std;
 
 bool Key::GetKey()
 {
-    
+    cout << "is there a key ?  0,1";
+    int ans;
+    cin >> ans;
+    if(ans == 1)
+    {
+        cout << "cin the key";
+        cin >> GottenKey;
+    }
+    return ans;
 }
 
 AllKey::AllKey(string path)
@@ -21,12 +29,4 @@ void AllKey::Init()
     
 }
 
-int AllKey::BinaryFind(int l,int r,string tar)
-{
 
-}
-
-int AllKey::Find(string tar)
-{
-    return BinaryFind(0,tot-1,tar);
-}

@@ -1,4 +1,5 @@
-#include <string>
+#include "string"
+#include "file/record.h"
 
 using namespace std;
 
@@ -7,12 +8,12 @@ class Thread
 public:
     int Ser;
     string NowKey;
-    string FilePath;
+    File nowfile;
 
     bool WaitChoice();
     bool WaitKey();
     bool IsLegal();
-    int Find();
+    Record Find();
     int Open(int tar);
     bool Close(int tar);
     void sendmsg(int type);

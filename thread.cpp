@@ -1,8 +1,9 @@
 #include "thread.h"
 #include "choice.h"
-#include "key.h"
-#include "time.h"
-#include "file.h"
+#include "key/key.h"
+#include "file/file.h"
+#include "file/record.h"
+#include "file/box.h"
 
 using namespace std;
 
@@ -31,23 +32,28 @@ bool Thread::WaitKey()
 
 bool Thread::IsLegal()
 {
-
+    if(NowKey.size() == 6)
+    {
+        for(int i=0; i<6; ++i)
+            if('0' > NowKey[i] || NowKey[i] > '9')
+                return false;
+        return true;
+    }   
+    return false;
 }
 
-int Thread::Find()
+Record Thread::Find()
 {
-    FindKey list(FilePath);
-    return list.Find(NowKey);
+    return nowfile.FileFind(NowKey);
 }
 
-int Thread::Open(int tar)
+void Thread::Open(int tar)
 {
 
 }
 
 bool Thread::Close(int tar)
 {
-
 
 }
 
@@ -59,68 +65,52 @@ void Thread::sendmsg(int type,int boxnum)
 void Thread::Run()
 {
     while(WaitChoice() == false);
-    Time time;
-    bool overtime = false;
-    while(WaitKey() == false)
-    {
-        if(time.Get() - time.st > maxtime)
-        {
-            overtime = true;
-            break;
-        }
-    }
-    if(overtime)
-        return;
-
-    if(IsLegal == false)
-        return;
     
-    File file(FilePath);
+    while(WaitKey() == false);
+
+    if(IsLegal() == false)
+    {
+        cout << "illegal key" << endl;
+        return;
+    }
+    
+    nowfile.Path = "E://c++//normal//wmbtestfile.txt";
+
     if(Ser == 0) //cun
     {
-        int BoxNum = Find();
-        if(BoxNum != -1)
+        Record ans = Find();
+        if(ans.BoxNum != -1)
             return;
-        if(Open(BoxNum) == true)
-            sendmsg(0,BoxNum);
-        Time time;
+
+        TarBox tarbox(1);
+        Record nowrec = tarbox.ToRec();
+        nowfile.FileInsert(nowrec);
+        sendmsg(0,tarbox);
+        Open(tarbox.boxnum);
+
         bool overtime = false;
-        while(Close(BoxNum) == false)
-        {
-            if(time.Get() - time.st > maxtime)
-            {
-                overtime = true;
-                break;
-            }
-        }
+        // TODO: about overtime
         if(overtime)
             sendmsg(-1,BoxNum);
     }
     else  //Qu
     {
-        int BoxNum = Find();
-        if(BoxNum == -1)
+        Record ans = Find();
+        if(ans.BoxNum == -1)
             return;
-        if(Open(BoxNum) == true)
-            sendmsg(0,BoxNum);
-        Time time;
+        
+        nowfile.FileDelete(ans);
+        Open(ans.BoxNum);
+
         bool overtime = false;
-        while(Close(BoxNum) == false)
-        {
-            if(time.Get() - time.st > maxtime)
-            {
-                overtime = true;
-                break;
-            }
-        }
+        // TODO: about overtime
         if(overtime);
     }
-    
-
 }
 /*
     int Ser;
     string Key;
+    
     bool WaitChoice();
     bool WaitKey();
     bool IsLegal();
